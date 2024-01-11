@@ -1,0 +1,236 @@
+================================================================================================================================================
+                                                     DOCKER (ASSIGNMENT NO :- 1)
+================================================================================================================================================
+
+-------------------------------------------------------------------------------------------
+1. Docker installation: Install Docker on your local system (Windows, macOS, or Linux). 
+Verify the installation by running the docker --version and docker info commands.
+-------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# service docker status
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2024-01-11 14:26:25 IST; 2min 9s ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 4541 (dockerd)
+      Tasks: 10
+     Memory: 31.3M
+     CGroup: /system.slice/docker.service
+             └─4541 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+root@DESKTOP-THNIIG3:~# docker --version
+Docker version 24.0.7, build afdd53b
+root@DESKTOP-THNIIG3:~# docker info
+Client: Docker Engine - Community
+ Version:    24.0.7
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+    Version:  v0.11.2
+    Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+  compose: Docker Compose (Docker Inc.)
+    Version:  v2.21.0
+    Path:     /usr/libexec/docker/cli-plugins/docker-compose
+
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0
+ Images: 0
+ Server Version: 24.0.7
+ Storage Driver: overlay2
+  Backing Filesystem: extfs
+  Supports d_type: true
+  Using metacopy: false
+  Native Overlay Diff: true
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: io.containerd.runc.v2 runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 3dd1e886e55dd695541fdcd67420c2888645a495
+ runc version: v1.1.10-0-g18a0cb0
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: builtin
+ Kernel Version: 5.15.133.1-microsoft-standard-WSL2
+ Operating System: Ubuntu 22.04.3 LTS
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 4
+ Total Memory: 7.702GiB
+ Name: DESKTOP-THNIIG3
+ ID: a9f1a888-12ea-4e30-ad47-6541a7e0c06a
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Live Restore Enabled: false
+
+WARNING: No blkio throttle.read_bps_device support
+WARNING: No blkio throttle.write_bps_device support
+WARNING: No blkio throttle.read_iops_device support
+WARNING: No blkio throttle.write_iops_device support
+
+
+-------------------------------------------------------------------------------------------------------------------
+2. Working with Docker images: Search for the official Ubuntu image on Docker Hub, 
+pull it to your local system using docker pull, and list all available images on your system using docker images.
+-------------------------------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# docker search ubuntu
+NAME                             DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+ubuntu                           Ubuntu is a Debian-based Linux operating sys…   16759     [OK]
+websphere-liberty                WebSphere Liberty multi-architecture images …   296       [OK]
+open-liberty                     Open Liberty multi-architecture images based…   62        [OK]
+neurodebian                      NeuroDebian provides neuroscience research s…   105       [OK]
+ubuntu-debootstrap               DEPRECATED; use "ubuntu" instead                52        [OK]
+ubuntu-upstart                   DEPRECATED, as is Upstart (find other proces…   115       [OK]
+ubuntu/nginx                     Nginx, a high-performance reverse proxy & we…   104
+ubuntu/squid                     Squid is a caching proxy for the Web. Long-t…   74
+ubuntu/cortex                    Cortex provides storage for Prometheus. Long…   4
+ubuntu/prometheus                Prometheus is a systems and service monitori…   53
+ubuntu/apache2                   Apache, a secure & extensible open-source HT…   70
+ubuntu/kafka                     Apache Kafka, a distributed event streaming …   37
+ubuntu/bind9                     BIND 9 is a very flexible, full-featured DNS…   66
+ubuntu/mysql                     MySQL open source fast, stable, multi-thread…   56
+ubuntu/zookeeper                 ZooKeeper maintains configuration informatio…   12
+ubuntu/postgres                  PostgreSQL is an open source object-relation…   32
+ubuntu/redis                     Redis, an open source key-value store. Long-…   21
+ubuntu/jre                       Distroless Java runtime based on Ubuntu. Lon…   12
+ubuntu/dotnet-aspnet             Chiselled Ubuntu runtime image for ASP.NET a…   15
+ubuntu/grafana                   Grafana, a feature rich metrics dashboard & …   9
+ubuntu/memcached                 Memcached, in-memory keyvalue store for smal…   5
+ubuntu/dotnet-deps               Chiselled Ubuntu for self-contained .NET & A…   11
+ubuntu/prometheus-alertmanager   Alertmanager handles client alerts from Prom…   9
+ubuntu/dotnet-runtime            Chiselled Ubuntu runtime image for .NET apps…   13
+ubuntu/cassandra                 Cassandra, an open source NoSQL distributed …   2
+root@DESKTOP-THNIIG3:~#  docker pull ubuntu
+Using default tag: latest
+latest: Pulling from library/ubuntu
+a48641193673: Pull complete
+Digest: sha256:6042500cf4b44023ea1894effe7890666b0c5c7871ed83a97c36c76ae560bb9b
+Status: Downloaded newer image for ubuntu:latest
+docker.io/library/ubuntu:latest
+root@DESKTOP-THNIIG3:~# docker images
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       latest    174c8c134b2a   4 weeks ago   77.9MB
+root@DESKTOP-THNIIG3:~#
+
+-----------------------------------------------------------------------------------
+3. Creating a Docker container: Run a Docker container using the Ubuntu image, 
+and execute a command inside the container (e.g., echo "Hello, Docker!").
+-----------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# docker run -it ubuntu
+root@b33831580cfe:/#  echo "Hello, Docker!"
+Hello, Docker!
+root@b33831580cfe:/# exit
+exit
+root@DESKTOP-THNIIG3:~# docker ps -a
+CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS                      PORTS     NAMES
+b33831580cfe   ubuntu    "/bin/bash"   55 seconds ago   Exited (0) 16 seconds ago             angry_shannon
+root@DESKTOP-THNIIG3:~#
+
+
+------------------------------------------------------------------------------------
+4. Inspect the Ubuntu Docker container to ensure it is in the "created" state only.
+------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# docker container create httpd
+Unable to find image 'httpd:latest' locally
+latest: Pulling from library/httpd
+af107e978371: Pull complete
+eba4da411ea0: Pull complete
+4f4fb700ef54: Pull complete
+ed4d6291a6c2: Pull complete
+b42c390e1de9: Pull complete
+eafe388a0bb8: Pull complete
+Digest: sha256:f0a93744d8006e6f7ee5086c9ddccdcfa33d1091f15269a00547b4c382459c1f
+Status: Downloaded newer image for httpd:latest
+a9009f01b67adcbcaa3705147b8eaeda795037df807b9be792117b1c7c58ceab
+root@DESKTOP-THNIIG3:~# docker ps -a
+CONTAINER ID   IMAGE     COMMAND              CREATED          STATUS                     PORTS     NAMES
+a9009f01b67a   httpd     "httpd-foreground"   12 seconds ago   Created                              gallant_heisenberg
+b33831580cfe   ubuntu    "/bin/bash"          3 minutes ago    Exited (0) 3 minutes ago             angry_shannon
+root@DESKTOP-THNIIG3:~# docker container ls -a
+CONTAINER ID   IMAGE     COMMAND              CREATED          STATUS                     PORTS     NAMES
+a9009f01b67a   httpd     "httpd-foreground"   58 seconds ago   Created                              gallant_heisenberg
+b33831580cfe   ubuntu    "/bin/bash"          4 minutes ago    Exited (0) 3 minutes ago             angry_shannon
+
+---------------------------------------------------------------------------------------------
+5. Execute the Ubuntu Docker container and confirm that the container's state is "running."
+---------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# docker container start a9009f01b67a
+a9009f01b67a
+root@DESKTOP-THNIIG3:~# docker  ps -a
+CONTAINER ID   IMAGE     COMMAND              CREATED         STATUS                     PORTS     NAMES
+a9009f01b67a   httpd     "httpd-foreground"   3 minutes ago   Up 9 seconds               80/tcp    gallant_heisenberg
+b33831580cfe   ubuntu    "/bin/bash"          6 minutes ago   Exited (0) 6 minutes ago             angry_shannon
+root@DESKTOP-THNIIG3:~# docker inspect a9009f01b67a
+[
+    {
+        "Id": "a9009f01b67adcbcaa3705147b8eaeda795037df807b9be792117b1c7c58ceab",
+        "Created": "2024-01-11T09:14:58.383389393Z",
+        "Path": "httpd-foreground",
+        "Args": [],
+        "State": {
+            "Status": "running",
+
+---------------------------------------------------------------------------------------------------------------
+6. Launch an HTTP container, verify its state, and then remove the container and image from your local system.
+---------------------------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# docker ps -a
+CONTAINER ID   IMAGE     COMMAND              CREATED         STATUS                     PORTS     NAMES
+a9009f01b67a   httpd     "httpd-foreground"   5 minutes ago   Up 2 minutes               80/tcp    gallant_heisenberg
+b33831580cfe   ubuntu    "/bin/bash"          8 minutes ago   Exited (0) 8 minutes ago             angry_shannon
+root@DESKTOP-THNIIG3:~# docker container stop a9009f01b67a
+a9009f01b67a
+root@DESKTOP-THNIIG3:~# docker ps -a
+CONTAINER ID   IMAGE     COMMAND              CREATED         STATUS                     PORTS     NAMES
+a9009f01b67a   httpd     "httpd-foreground"   5 minutes ago   Exited (0) 5 seconds ago             gallant_heisenberg
+b33831580cfe   ubuntu    "/bin/bash"          9 minutes ago   Exited (0) 8 minutes ago             angry_shannon
+root@DESKTOP-THNIIG3:~# docker container rm a9009f01b67a
+a9009f01b67a
+root@DESKTOP-THNIIG3:~# docker ps -a
+CONTAINER ID   IMAGE     COMMAND       CREATED          STATUS                     PORTS     NAMES
+b33831580cfe   ubuntu    "/bin/bash"   10 minutes ago   Exited (0) 9 minutes ago             angry_shannon
+root@DESKTOP-THNIIG3:~# docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       latest    174c8c134b2a   4 weeks ago    77.9MB
+httpd        latest    6fd77d7e5eb7   2 months ago   167MB
+root@DESKTOP-THNIIG3:~# docker image rm -f  6fd77d7e5eb7
+Untagged: httpd:latest
+Untagged: httpd@sha256:f0a93744d8006e6f7ee5086c9ddccdcfa33d1091f15269a00547b4c382459c1f
+Deleted: sha256:6fd77d7e5eb732dacab601d4556c04a6c312928fb8989fe3b0a47d82db772441
+Deleted: sha256:182c1af747d0a2ececd86c81cf1a0a6b0fde0b1fc82f43bc6d08b9424704bee6
+Deleted: sha256:e54e0c05fe4f251ec22da736ce53230922f53122eb277ed4340b13d2fb33b7ee
+Deleted: sha256:919f2fe845437e6aafaeff643bf2989b31c06851746e46651d0dc93294c6d499
+Deleted: sha256:1ad6aa5d8466f1d57283c01a6db9ead817ef489c57c6a5fd89353f99d0d05526
+Deleted: sha256:bbbcf99e6e47545823c0b9aea2dcaf8f2d50808c3b27219e8d99bf3ceb1d0c9e
+Deleted: sha256:7292cf786aa89399bca4e3edd105d3b2ee0683a46ef1f5ff436c0f9d1d49e765
+root@DESKTOP-THNIIG3:~# docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       latest    174c8c134b2a   4 weeks ago   77.9MB
+
+-------------------------------------------------------------------------------------------------------
+7. Execute a command to display a filtered list of containers, showing only their short container IDs.
+-------------------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# docker ps -q
+b33831580cfe
+
