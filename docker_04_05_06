@@ -1,0 +1,702 @@
+---------------------------------------------------------------------------------------------------------------------------------
+24. Pull the Busy-box image to your local system, tag it, and push it to the Docker Hub repository "yourname_cloudethix_busybox.
+---------------------------------------------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# docker pull busybox
+Using default tag: latest
+latest: Pulling from library/busybox
+a307d6ecc620: Pull complete
+Digest: sha256:ba76950ac9eaa407512c9d859cea48114eeff8a6f12ebaa5d32ce79d4a017dd8
+Status: Downloaded newer image for busybox:latest
+docker.io/library/busybox:latest
+
+root@DESKTOP-THNIIG3:~# docker image tag busybox:latest ashrafsk/aman_cloudethix_busybox:v1
+root@DESKTOP-THNIIG3:~# docker image ls
+REPOSITORY                         TAG       IMAGE ID       CREATED        SIZE
+ashrafsk/aman_cloudethix_busybox   v1        9211bbaa0dbd   4 weeks ago    4.26MB
+                         
+root@DESKTOP-THNIIG3:~# docker image push ashrafsk/aman_cloudethix_busybox:v1
+The push refers to repository [docker.io/ashrafsk/aman_cloudethix_busybox]
+82ae998286b2: Pushed
+v1: digest: sha256:7de5fa822a9d1e507c36565ee0cf50c08faa64505461c844a3ce3944d23efa35 size: 527
+root@DESKTOP-THNIIG3:~#
+
+--------------------------------------------------------------------------------------------------- 
+25. In your project directory, create a Dockerfile (named Dockerfile) with the following content.
+		FROM nginx:latest
+		COPY custom-index.html /usr/share/nginx/html/index.html
+	Ensure you also have a file named custom-index.html in the same directory.
+	Build the Docker image using the Dockerfile you created and push it your repository. 
+	Delete the local image.
+	Start a new container using the custom Nginx image that you just pushed.
+	Map port 8080 on your host to port 80 in the container. Check the container page in browser.
+----------------------------------------------------------------------------------------------------		
+	
+root@DESKTOP-THNIIG3:/home/amaan# vim dockerfile
+root@DESKTOP-THNIIG3:/home/amaan# cat dockerfile
+FROM nginx:latest
+COPY custom-index.html /usr/share/nginx/html/index.html
+
+root@DESKTOP-THNIIG3:/home/amaan# touch custom-index.html
+root@DESKTOP-THNIIG3:/home/amaan#
+
+root@DESKTOP-THNIIG3:/home/amaan#  docker image tag dockerfile shaikhamann/devops:v1
+root@DESKTOP-THNIIG3:/home/amaan# docker image ls
+REPOSITORY                         TAG       IMAGE ID       CREATED              SIZE
+dockerfile                         latest    37d68de8f0bd   About a minute ago   187MB
+shaikhamann/devops                 v1        37d68de8f0bd   About a minute ago   187MB
+
+
+root@DESKTOP-THNIIG3:/home/amaan# service docker start
+
+root@DESKTOP-THNIIG3:/home/amaan# docker build -t shaikhamann/devops:v1 .
+[+] Building 0.4s (7/7) FINISHED                                                                             docker:default
+ => [internal] load build definition from dockerfile                                                                   0.1s
+ => => transferring dockerfile: 111B                                                                                   0.0s
+ => [internal] load .dockerignore                                                                                      0.1s
+ => => transferring context: 2B                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/nginx:latest                                                        0.0s
+ => [internal] load build context                                                                                      0.1s
+ => => transferring context: 38B                                                                                       0.0s
+ => [1/2] FROM docker.io/library/nginx:latest                                                                          0.1s
+ => [2/2] COPY custom-index.html /usr/share/nginx/html/index.html                                                      0.0s
+ => exporting to image                                                                                                 0.0s
+ => => exporting layers                                                                                                0.0s
+ => => writing image sha256:37d68de8f0bd33835426f0e2ac71a577d0887179eae447575f5af95c4d41c2e5                           0.0s
+ => => naming to docker.io/shaikhamann/devops:v1 0.0s	
+ 
+root@DESKTOP-THNIIG3:/home/amaan#  docker image tag dockerfile shaikhamann/devops:v1
+root@DESKTOP-THNIIG3:/home/amaan# docker image ls
+REPOSITORY                         TAG       IMAGE ID       CREATED              SIZE
+dockerfile                         latest    37d68de8f0bd   About a minute ago   187MB
+shaikhamann/devops                 v1        37d68de8f0bd   About a minute ago   187MB
+ 
+root@DESKTOP-THNIIG3:/home/amaan/Assignment-# docker image push shaikhamann/devops:v1
+The push refers to repository [docker.io/shaikhamann/devops]
+c3948a4c520b: Pushed
+009507b85609: Pushed
+fbcc9bc44d3e: Pushed
+b4ad47845036: Pushed
+eddcd06e5ef9: Pushed
+b61d4b2cd2da: Pushed
+b6c2a8d6f0ac: Pushed
+571ade696b26: Pushed
+v1: digest: sha256:7113d2c1c71fffde7289a934ab1fc4c8472f8a1a59f7fcc899b27050555342b6 size: 1985
+root@DESKTOP-THNIIG3:/home/amaan/Assignment-#  docker image rm dockerfile
+Untagged: dockerfile:latest
+root@DESKTOP-THNIIG3:/home/amaan/Assignment-# docker container run -itd -p 8080:80 --name docker_1  shaikhamann/devops:v1
+b3f4c439481f5128394afa04c40f2cad9b14225290fffdd41c68c2afcd108be6
+root@DESKTOP-THNIIG3:/home/amaan/Assignment-#
+root@DESKTOP-THNIIG3:/home/amaan/Assignment-#
+root@DESKTOP-THNIIG3:/home/amaan/Assignment-# netstat -tunlp
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN      2157/docker-proxy
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      115/systemd-resolve
+tcp6       0      0 :::8080                 :::*                    LISTEN      2165/docker-proxy
+tcp6       0      0 :::80                   :::*                    LISTEN      273/apache2
+udp        0      0 127.0.0.53:53           0.0.0.0:*                           115/systemd-resolve
+udp        0      0 127.0.0.1:323           0.0.0.0:*                           -
+udp6       0      0 ::1:323                 :::*                                -
+root@DESKTOP-THNIIG3:/home/amaan/Assignment-#
+
+
+	
+------------------------------------------------------------------------------------------------------------------------	
+26. Push the Redis images tagged as version 1 and 3 to your Docker Hub repository, named "yourname_cloudethix_redis."
+------------------------------------------------------------------------------------------------------------------------	
+
+root@DESKTOP-THNIIG3:/home/amaan# service docker start
+root@DESKTOP-THNIIG3:/home/amaan# service docker status
+     Active: active (running) since Tue 2024-01-23 11:10:10 IST; 4h 5min ag
+	 
+root@DESKTOP-THNIIG3:/home/amaan#  docker pull redis
+Using default tag: latest
+latest: Pulling from library/redis
+2f44b7a888fa: Already exists
+c55535369ffc: Pull complete
+3622841bf0aa: Pull complete
+91a62ca7377a: Pull complete
+fdd219d1f4ab: Pull complete
+fdf07fe2fb4c: Pull complete
+4f4fb700ef54: Pull complete
+fba604e70bfe: Pull complete
+Digest: sha256:b5ddcd52d425a8e354696c022f392fe45fca928f68d6289e6bb4a709c3a74668
+Status: Downloaded newer image for redis:latest
+docker.io/library/redis:latest
+	 
+root@DESKTOP-THNIIG3:/home/amaan# docker image tag redis shaikhamann/aman_cloudethix_redis
+root@DESKTOP-THNIIG3:/home/amaan# docker image tag redis shaikhamann/aman_cloudethix_redis:v1
+root@DESKTOP-THNIIG3:/home/amaan# docker image tag redis shaikhamann/aman_cloudethix_redis:v3
+root@DESKTOP-THNIIG3:/home/amaan# docker image ls
+REPOSITORY                          TAG       IMAGE ID       CREATED             SIZE
+redis                               latest    bdff4838c172   13 days ago         138MB
+shaikhamann/aman_cloudethix_redis   latest    bdff4838c172   13 days ago         138MB
+shaikhamann/aman_cloudethix_redis   v1        bdff4838c172   13 days ago         138MB
+shaikhamann/aman_cloudethix_redis   v3        bdff4838c172   13 days ago         138MB
+
+root@DESKTOP-THNIIG3:/home/amaan# docker image push shaikhamann/aman_cloudethix_redis
+Using default tag: latest
+The push refers to repository [docker.io/shaikhamann/aman_cloudethix_redis]
+cd02e5942a1e: Mounted from library/redis
+5f70bf18a086: Mounted from library/redis
+fcae66387b13: Mounted from library/redis
+cbc573a5c422: Mounted from library/redis
+116584210380: Mounted from library/redis
+c95bcf9f626e: Mounted from library/redis
+2361aeb2c69c: Mounted from library/redis
+571ade696b26: Mounted from shaikhamann/devops
+latest: digest: sha256:5d5d31a84c7fec11a3c8a29b04b1712f650a98338f6a51152de42459ea24060b size: 1986
+
+root@DESKTOP-THNIIG3:/home/amaan# docker image push shaikhamann/aman_cloudethix_redis:v1
+The push refers to repository [docker.io/shaikhamann/aman_cloudethix_redis]
+cd02e5942a1e: Layer already exists
+5f70bf18a086: Layer already exists
+fcae66387b13: Layer already exists
+cbc573a5c422: Layer already exists
+116584210380: Layer already exists
+c95bcf9f626e: Layer already exists
+2361aeb2c69c: Layer already exists
+571ade696b26: Layer already exists
+v1: digest: sha256:5d5d31a84c7fec11a3c8a29b04b1712f650a98338f6a51152de42459ea24060b size: 1986
+
+root@DESKTOP-THNIIG3:/home/amaan# docker image push shaikhamann/aman_cloudethix_redis:v3
+The push refers to repository [docker.io/shaikhamann/aman_cloudethix_redis]
+cd02e5942a1e: Layer already exists
+5f70bf18a086: Layer already exists
+fcae66387b13: Layer already exists
+cbc573a5c422: Layer already exists
+116584210380: Layer already exists
+c95bcf9f626e: Layer already exists
+2361aeb2c69c: Layer already exists
+571ade696b26: Layer already exists
+v3: digest: sha256:5d5d31a84c7fec11a3c8a29b04b1712f650a98338f6a51152de42459ea24060b size: 1986
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+27. Create a remote Git repository and add the Dockerfile and index.html files. Clone the repository locally and create a release branch. 
+Build the Docker image from the release branch with a meaningful tag, then run a container from the image and expose it on host port 8383. 
+Check the webpage in a browser, and upon success, push the image to your Docker Hub repository named "yourname_cloudethix_nginx." 
+Finally, push the release branch to the remote Git repository and merge it by creating a pull request.
+-------------------------------------------------------------------------------------------------------------------------------		  
+root@DESKTOP-THNIIG3:~# git clone git@github.com:amanshaikh135/ashraf.git
+Cloning into 'ashraf'...
+remote: Enumerating objects: 9, done.
+remote: Counting objects: 100% (9/9), done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 9 (delta 1), reused 0 (delta 0), pack-reused 0
+Receiving objects: 100% (9/9), done.
+Resolving deltas: 100% (1/1), done.
+root@DESKTOP-THNIIG3:~# ll
+total 108
+drwx------ 11 root root  4096 Jan 24 13:22 ./
+drwxr-xr-x 19 root root  4096 Jan 24 12:04 ../
+drwxr-xr-x  3 root root  4096 Jan 24 13:22 ashraf/
+
+root@DESKTOP-THNIIG3:~# cd ashraf/
+root@DESKTOP-THNIIG3:~/ashraf# git checkout -b release
+Switched to a new branch 'release'
+
+root@DESKTOP-THNIIG3:~/ashraf# docker build -t my_image_nginx .
+[+] Building 0.6s (7/7) FINISHED                                                                             docker:default
+ => [internal] load build definition from Dockerfile                                                                   0.0s
+ => => transferring dockerfile: 107B                                                                                   0.0s
+ => [internal] load .dockerignore                                                                                      0.0s
+ => => transferring context: 2B                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/nginx:latest                                                        0.0s
+ => [internal] load build context                                                                                      0.0s
+ => => transferring context: 223B                                                                                      0.0s
+ => CACHED [1/2] FROM docker.io/library/nginx:latest                                                                   0.0s
+ => [2/2] COPY ./index.html /usr/share/nginx/html/index.html                                                           0.3s
+ => exporting to image                                                                                                 0.1s
+ => => exporting layers                                                                                                0.0s
+ => => writing image sha256:599a5e23b6fd8a4b0aed2e55f5d48eb42c3a8de4f7be30de31df121b64e467c8                           0.0s
+ => => naming to docker.io/library/my_image_nginx  0.0s
+ 
+root@DESKTOP-THNIIG3:~/ashraf# docker image ls
+REPOSITORY                                            TAG       IMAGE ID       CREATED             SIZE
+my_image_nginx                                        latest    599a5e23b6fd   23 seconds ago      187MB
+
+
+root@DESKTOP-THNIIG3:~/ashraf# docker container run -itd -p 8383:80 --name aman_containere my_image_nginx:latest
+02f17ae315ed6a854b318f39f3673c55cc185e58a3431e5eab9b1702dfafed4e
+root@DESKTOP-THNIIG3:~/ashraf# docker container ls
+CONTAINER ID   IMAGE                   COMMAND                  CREATED          STATUS             PORTS
+                NAMES
+02f17ae315ed   my_image_nginx:latest   "/docker-entrypoint.…"   20 seconds ago   Up 19 seconds      0.0.0.0:8383->80/tcp, :::8383->80/tcp   aman_containere
+
+root@DESKTOP-THNIIG3:~/ashraf# curl 172.17.0.5
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cloud-Ethix, Docker Nginx</title>
+</head>
+<body>
+<h2>Hello from Nginx container, Cloud-Ethix</h2>
+</body>
+</html>
+root@DESKTOP-THNIIG3:~/ashraf# curl -i 172.17.0.5
+HTTP/1.1 200 OK
+Server: nginx/1.25.3
+Date: Wed, 24 Jan 2024 08:03:00 GMT
+Content-Type: text/html
+Content-Length: 184
+Last-Modified: Wed, 24 Jan 2024 07:52:10 GMT
+Connection: keep-alive
+ETag: "65b0c1aa-b8"
+Accept-Ranges: bytes
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cloud-Ethix, Docker Nginx</title>
+</head>
+<body>
+<h2>Hello from Nginx container, Cloud-Ethix</h2>
+</body>
+</html>
+
+
+root@DESKTOP-THNIIG3:~/ashraf# docker tag my_image_nginx:latest aman_cloudethix_nginx/my_image:v1
+root@DESKTOP-THNIIG3:~/ashraf# git branch
+  main
+* release
+
+root@DESKTOP-THNIIG3:~/ashraf# git push origin release
+Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
+remote:
+remote: Create a pull request for 'release' on GitHub by visiting:
+remote:      https://github.com/amanshaikh135/ashraf/pull/new/release
+remote:
+To github.com:amanshaikh135/ashraf.git
+ * [new branch]      release -> release
+----------------------------------------------------------------------------------------------------------------------
+28. Save all local Redis images as a .tar file in the master branch of your local repository. 
+Delete all Redis images from your local system and push the master branch to the remote repository. 
+Load the Redis images from the tar file to your local system, and verify that all images have been loaded correctly.
+-----------------------------------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image save shaikhamann/aman_cloudethix_redis:v1 shaikhamann/aman_cloudethix_redis:v3 shaikhamann/aman_cloudethix_redis:latest -o redis.tar
+root@DESKTOP-THNIIG3:~/tar/ashraf# ll
+total 138872
+drwxr-xr-x 3 root root      4096 Jan 24 14:19 ./
+drwxr-xr-x 4 root root      4096 Jan 24 14:19 ../
+drwxr-xr-x 8 root root      4096 Jan 24 14:19 .git/
+-rw-r--r-- 1 root root        69 Jan 24 14:19 Dockerfile
+-rw-r--r-- 1 root root        16 Jan 24 14:19 README.md
+-rw-r--r-- 1 root root       184 Jan 24 14:19 index.html
+-rw------- 1 root root 142179328 Jan 24 14:19 redis.tar
+
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# tar -cvjf redis.tar.bz2 redis.tar
+redis.tar
+root@DESKTOP-THNIIG3:~/tar/ashraf# ll
+total 182332
+drwxr-xr-x 3 root root      4096 Jan 24 14:19 ./
+drwxr-xr-x 4 root root      4096 Jan 24 14:19 ../
+drwxr-xr-x 8 root root      4096 Jan 24 14:19 .git/
+-rw-r--r-- 1 root root        69 Jan 24 14:19 Dockerfile
+-rw-r--r-- 1 root root        16 Jan 24 14:19 README.md
+-rw-r--r-- 1 root root       184 Jan 24 14:19 index.html
+-rw------- 1 root root 142179328 Jan 24 14:19 redis.tar
+-rw-r--r-- 1 root root  44502970 Jan 24 14:20 redis.tar.bz2
+root@DESKTOP-THNIIG3:~/tar/ashraf# git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        redis.tar
+        redis.tar.bz2
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# git add redis.tar.bz2
+root@DESKTOP-THNIIG3:~/tar/ashraf# git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   redis.tar.bz2
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        redis.tar
+		
+		
+root@DESKTOP-THNIIG3:~/tar/ashraf# git commit -m "Added redis.tar.bz2 file"
+[main 6b226f5] Added redis.tar.bz2 file
+ Committer: root <root@DESKTOP-THNIIG3>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 redis.tar.bz2
+root@DESKTOP-THNIIG3:~/tar/ashraf# git status
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        redis.tar
+
+nothing added to commit but untracked files present (use "git add" to track)
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image ls
+REPOSITORY                                            TAG       IMAGE ID       CREATED          SIZE              
+redis                                                 latest    bdff4838c172   2 weeks ago      138MB		
+shaikhamann/aman_cloudethix_redis                     latest    bdff4838c172   2 weeks ago      138MB
+shaikhamann/aman_cloudethix_redis                     v1        bdff4838c172   2 weeks ago      138MB
+shaikhamann/aman_cloudethix_redis                     v3        bdff4838c172   2 weeks ago      138MB	
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image rm shaikhamann/aman_cloudethix_redis:latest
+Untagged: shaikhamann/aman_cloudethix_redis:latest
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image rm shaikhamann/aman_cloudethix_redis:v1
+Untagged: shaikhamann/aman_cloudethix_redis:v1
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image rm shaikhamann/aman_cloudethix_redis:v3
+Untagged: shaikhamann/aman_cloudethix_redis:v3
+Untagged: shaikhamann/aman_cloudethix_redis@sha256:5d5d31a84c7fec11a3c8a29b04b1712f650a98338f6a51152de42459ea24060b
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image ls
+REPOSITORY                                            TAG       IMAGE ID       CREATED          SIZE
+redis                                                 latest    bdff4838c172   2 weeks ago      138MB
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# git branch
+* main
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# git push origin main
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 42.35 MiB | 2.55 MiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To github.com:amanshaikh135/ashraf.git
+   5781860..6b226f5  main -> main
+   
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image load -i redis.tar
+Loaded image: shaikhamann/aman_cloudethix_redis:v1
+Loaded image: shaikhamann/aman_cloudethix_redis:v3
+Loaded image: shaikhamann/aman_cloudethix_redis:latest
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+29. Pull the Busy-box image to your local system, tag it, and push it to the Docker Hub repository "yourname_cloudethix_busybox." 
+Export the Docker image from the NGINX container, create a .tar file, and import the tar file to create a Docker image with a meaningful name. 
+After importing the image, tag it and push it to the "yourname_cloudethix_busybox" Docker Hub repository.
+-------------------------------------------------------------------------------------------------------------------------------	
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker pull busybox
+Using default tag: latest
+latest: Pulling from library/busybox
+9ad63333ebc9: Pull complete
+Digest: sha256:6d9ac9237a84afe1516540f40a0fafdc86859b2141954b4d643af7066d598b74
+Status: Downloaded newer image for busybox:latest
+docker.io/library/busybox:latest
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image ls
+
+REPOSITORY                                            TAG       IMAGE ID       CREATED             SIZE
+busybox                                               latest    3f57d9401f8d   6 days ago          4.26MB	
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image tag busybox:latest shaikhamann/amaan_cloudethix_busybox:v1
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image ls
+REPOSITORY                                            TAG       IMAGE ID       CREATED             SIZE
+busybox                                               latest    3f57d9401f8d   6 days ago          4.26MB
+shaikhamann/amaan_cloudethix_busybox                  v1        3f57d9401f8d   6 days ago          4.26MB	
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image push shaikhamann/amaan_cloudethix_busybox:v1
+The push refers to repository [docker.io/shaikhamann/amaan_cloudethix_busybox]
+2e112031b4b9: Mounted from library/busybox
+v1: digest: sha256:d319b0e3e1745e504544e931cde012fc5470eba649acc8a7b3607402942e5db7 size: 527
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker container run -itd --name nginx_image nginx
+1256f026cdb3326b03450c8e2e14d5c673f5fc5a39d6da4dba6ed3b11a1e5147
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker container ls
+CONTAINER ID   IMAGE                   COMMAND                  CREATED             STATUS             PORTS
+          NAMES
+1256f026cdb3   nginx                   "/docker-entrypoint.…"   11 seconds ago      Up 11 seconds      80/tcp
+          nginx_image
+		  
+		  
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image ls
+
+REPOSITORY                                            TAG       IMAGE ID       CREATED             SIZE
+nginx                                                 latest    a8758716bb6a   3 months ago        187MB	
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker export nginx_image>nginx.tar
+root@DESKTOP-THNIIG3:~/tar/ashraf# ll
+total 367072
+-rw-r--r-- 1 root root 189172224 Jan 24 14:43 nginx.tar
+
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image import nginx.tar nginx_image
+sha256:c9a51882998a6c8346c16cca0c2b8b283d7084a392e09d03c173de3de1384d7d
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image ls
+REPOSITORY                                            TAG       IMAGE ID       CREATED             SIZE
+nginx_image                                           latest    c9a51882998a   8 seconds ago       185MB	
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image tag nginx_image:latest aman_cloudethix_nginx/my_image:v1
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image ls
+REPOSITORY                                            TAG       IMAGE ID       CREATED              SIZE
+aman_cloudethix_nginx/my_image                        v1        c9a51882998a   About a minute ago   185MB
+
+
+root@DESKTOP-THNIIG3:~/tar/ashraf# docker image push shaikhamann/amaan_cloudethix_busybox:v5
+The push refers to repository [docker.io/shaikhamann/amaan_cloudethix_busybox]
+d17fdc069721: Pushed
+v5: digest: sha256:a437d35bb7e70303eae17d59e3528dc13a4cbb5164f73df515d68d58d3d37c7d size: 528
+root@DESKTOP-THNIIG3:~/tar/ashraf#
+		    
+---------------------------------------------------------------------------------------------------------------	
+30. Dockerfile creation: Create a simple Dockerfile to build a custom image with the following specifications:
+1. Base image: Ubuntu
+2. Install packages: curl, vim, and git
+3. Set an environment variable: MY_NAME=Your_Name
+4. Build the custom image using docker build and list all available images using docker images.
+----------------------------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:/home/amaan# vim Dockerfile
+root@DESKTOP-THNIIG3:/home/amaan# cat Dockerfile
+FROM ubuntu:latest
+RUN apt update
+RUN apt install curl -y
+RUN apt install vim -y
+RUN apt install git -y
+ENV MY_NAME=AMAAN
+root@DESKTOP-THNIIG3:/home/amaan# docker build -t ubuntu:latest .
+[+] Building 44.6s (9/9) FINISHED                                                                            docker:default
+ => [internal] load build definition from Dockerfile                                                                   0.0s
+ => => transferring dockerfile: 272B                                                                                   0.0s
+ => [internal] load .dockerignore                                                                                      0.0s
+ => => transferring context: 2B                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                                       0.0s
+ => [1/5] FROM docker.io/library/ubuntu:latest                                                                         0.0s
+ => [2/5] RUN apt update                                                                                               8.9s
+ => [3/5] RUN apt install curl -y                                                                                     11.2s
+ => [4/5] RUN apt install vim -y                                                                                      10.6s
+ => [5/5] RUN apt install git -y                                                                                      12.8s
+ => exporting to image                                                                                                 1.0s
+ => => exporting layers                                                                                                1.0s
+ => => writing image sha256:ec4a649e7ce9ac34694bd13e6ae6c26185b1c1badbf5aae31e1ac5d40019fdff                           0.0s
+ => => naming to docker.io/library/ubuntu:latest                                                                       0.0s
+root@DESKTOP-THNIIG3:/home/amaan#
+
+
+-----------------------------------------------------------
+31. **Create Directories:**
+   - Establish two directories named "DHUB" and "AWSECR."
+----------------------------------------------------------- 
+
+root@DESKTOP-THNIIG3:/home/amaan# mkdir DHUB
+root@DESKTOP-THNIIG3:/home/amaan# mkdir AWSECR
+root@DESKTOP-THNIIG3:/home/amaan#
+root@DESKTOP-THNIIG3:/home/amaan# ll
+total 58640
+drwxr-xr-x 2 root  root      4096 Jan 24 12:10 AWSECR/
+drwxr-xr-x 2 root  root      4096 Jan 24 12:10 DHUB/
+
+------------------------------------------------------------------------------------------------------------------------
+32. **Dockerfile Creation:**
+   - Develop two Dockerfiles to construct custom images with the following specifications:
+     - Base image: Ubuntu
+     - Install packages: httpd
+     - Add "I am from Docker Hub" to the index.html file for DHUB directory and "I am from ECR" for AWSECR directory.
+     - Set environment variable ENV_NAME=DHUB for the DHUB directory and ENV_NAME=AWSECR for the AWSECR directory.
+ - Start http service using ENTRYPOINT 
+ -  Expose port 80.
+------------------------------------------------------------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~# cd GIT/
+root@DESKTOP-THNIIG3:~/GIT# mkdir DHUB
+root@DESKTOP-THNIIG3:~/GIT# mkdir AWSECR
+root@DESKTOP-THNIIG3:~/GIT#
+root@DESKTOP-THNIIG3:~/GIT#
+root@DESKTOP-THNIIG3:~/GIT#
+root@DESKTOP-THNIIG3:~/GIT# cd DHUB/
+root@DESKTOP-THNIIG3:~/GIT/DHUB#
+root@DESKTOP-THNIIG3:~/GIT/DHUB#
+root@DESKTOP-THNIIG3:~/GIT/DHUB# vim Dockerfile
+root@DESKTOP-THNIIG3:~/GIT/DHUB# cat Dockerfile
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get install -y apache2
+RUN echo "I am from Docker Hub" > /var/www/html/index.html
+ENV ENV_NAME=DHUB
+ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
+EXPOSE 80
+root@DESKTOP-THNIIG3:~/GIT/DHUB# cd -
+/root/GIT
+root@DESKTOP-THNIIG3:~/GIT# cd AWSECR/
+root@DESKTOP-THNIIG3:~/GIT/AWSECR# vim Dockerfile
+root@DESKTOP-THNIIG3:~/GIT/AWSECR# cat Dockerfile
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install -y apache2
+RUN echo "I am from ECR" > /var/www/html/index.html
+ENV ENV_NAME=AWSECR
+ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
+EXPOSE 80
+root@DESKTOP-THNIIG3:~/GIT/AWSECR#
+
+
+------------------------------------------------------------------- 
+33. **Build Custom Images:**
+   - Utilize the docker build command to build the custom images.
+   - List all available images using docker images.
+-------------------------------------------------------------------
+
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker image build -t dhub_img:v1 .
+[+] Building 16.7s (8/8) FINISHED                                                                            docker:default
+ => [internal] load build definition from Dockerfile                                                                   0.1s
+ => => transferring dockerfile: 229B                                                                                   0.0s
+ => [internal] load .dockerignore                                                                                      0.0s
+ => => transferring context: 2B                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                                       0.0s
+ => [1/4] FROM docker.io/library/ubuntu                                                                                0.1s
+ => [2/4] RUN apt-get update                                                                                           3.1s
+ => [3/4] RUN apt-get install -y apache2                                                                              12.4s
+ => [4/4] RUN echo "I am from ECR" > /var/www/html/index.html                                                          0.4s
+ => exporting to image                                                                                                 0.5s
+ => => exporting layers                                                                                                0.5s
+ => => writing image sha256:d7bf0ff4b676e6c2c6412a59585ccf9d12164a59a81ab85b473558888f7c8838                           0.0s
+ => => naming to docker.io/library/dhub_img:v1                                                                         0.0s
+root@DESKTOP-THNIIG3:~/GIT/DHUB#  cd -
+/root/GIT
+root@DESKTOP-THNIIG3:~/GIT# cd AWSECR
+root@DESKTOP-THNIIG3:~/GIT/AWSECR# docker image build -t awsecr_img:v2 .
+[+] Building 0.1s (8/8) FINISHED                                                                             docker:default
+ => [internal] load build definition from Dockerfile                                                                   0.0s
+ => => transferring dockerfile: 229B                                                                                   0.0s
+ => [internal] load .dockerignore                                                                                      0.0s
+ => => transferring context: 2B                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                                       0.0s
+ => [1/4] FROM docker.io/library/ubuntu                                                                                0.0s
+ => CACHED [2/4] RUN apt-get update                                                                                    0.0s
+ => CACHED [3/4] RUN apt-get install -y apache2                                                                        0.0s
+ => CACHED [4/4] RUN echo "I am from ECR" > /var/www/html/index.html                                                   0.0s
+ => exporting to image                                                                                                 0.0s
+ => => exporting layers                                                                                                0.0s
+ => => writing image sha256:d7bf0ff4b676e6c2c6412a59585ccf9d12164a59a81ab85b473558888f7c8838                           0.0s
+ => => naming to docker.io/library/awsecr_img:v2                                                                       0.0s
+root@DESKTOP-THNIIG3:~/GIT/AWSECR#
+
+---------------------------------------------- 
+34. **Push Images to Repositories:**
+   - Push the Docker image to Docker Hub.
+   - Push the Docker image to AWS ECR.
+----------------------------------------------
+
+
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker image tag dhub_img:v1 shaikhamann/docker_images
+
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker image ls
+REPOSITORY                          TAG       IMAGE ID       CREATED          SIZE
+awsecr_img                          v2        d7bf0ff4b676   4 minutes ago    316MB
+dhub_img                            v1        d7bf0ff4b676   4 minutes ago    316MB
+shaikhamann/docker_images           latest    d7bf0ff4b676   4 minutes ago    316MB
+ubuntu                              latest    ec4a649e7ce9   19 minutes ago   261MB
+shaikhamann/devops                  <none>    37d68de8f0bd   22 hours ago     187MB
+my_image                            v1        4dd25a137036   12 days ago      584MB
+shaikhamann/ashraf                  latest    4dd25a137036   12 days ago      584MB
+my_iamge                            ver1      4dd25a137036   12 days ago      584MB
+redis                               latest    bdff4838c172   2 weeks ago      138MB
+shaikhamann/aman_cloudethix_redis   latest    bdff4838c172   2 weeks ago      138MB
+shaikhamann/aman_cloudethix_redis   v1        bdff4838c172   2 weeks ago      138MB
+shaikhamann/aman_cloudethix_redis   v3        bdff4838c172   2 weeks ago      138MB
+shaikhamann/devops                  v1        bdff4838c172   2 weeks ago      138MB
+shaikhamann/devops                  v2        bdff4838c172   2 weeks ago      138MB
+shaikhamann/devops                  v3        bdff4838c172   2 weeks ago      138MB
+ashrafsk/aman_cloudethix_busybox    v1        9211bbaa0dbd   5 weeks ago      4.26MB
+busybox                             latest    9211bbaa0dbd   5 weeks ago      4.26MB
+ubuntu                              <none>    174c8c134b2a   6 weeks ago      77.9MB
+nginx                               latest    a8758716bb6a   3 months ago     187MB
+httpd                               latest    92fa43a2ff60   3 months ago     167MB
+
+
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker image push shaikhamann/docker_images
+Using default tag: latest
+The push refers to repository [docker.io/shaikhamann/docker_images]
+86c095799869: Pushed
+565ee3389ce9: Pushed
+647defe3cf94: Pushed
+ae0575be7876: Pushed
+42330ee4c9fd: Pushed
+68867d056ec3: Pushed
+f8560bb8c6a8: Pushed
+a1360aae5271: Mounted from library/ubuntu
+latest: digest: sha256:57bde32d37070930bc61bbc9a8b03d0356295161186bcef345cf1306227c4c69 size: 2005
+
+
+root@DESKTOP-THNIIG3:~/GIT/DHUB# aws configure
+AWS Access Key ID [****************L3F3]: AKIA47J5Y42ZWLBV7UYT
+AWS Secret Access Key [****************Yx5n]: 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
+Default region name [us-east-1]:
+Default output format [json]:
+root@DESKTOP-THNIIG3:~/GIT/DHUB# aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin id.dkr.ecr.us-east-1.amazonaws.com
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker tag awsecr_img:v2 112365962865.dkr.ecr.us-east-1.amazonaws.com/awsecr:v2
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker image push 112365962865.dkr.ecr.us-east-1.amazonaws.com/awsecr:v2
+The push refers to repository [112365962865.dkr.ecr.us-east-1.amazonaws.com/awsecr]
+86c095799869: Preparing
+565ee3389ce9: Preparing
+647defe3cf94: Preparing
+ae0575be7876: Preparing
+42330ee4c9fd: Preparing
+68867d056ec3: Waiting
+f8560bb8c6a8: Waiting
+a1360aae5271: Waiting
+v2: digest: sha256:1564ce02d3cc72db311476333381819cce744d101003c9327eb62d30ba46cc38 size: 2006
+
+------------------------------------------------------------------------------------------------------------------------------ 
+35. **Run Containers:**
+
+   - Execute a container from the Docker Hub image, naming it "I_AM_FROM_DHUB," and mapping host port 8081 to the container.
+ 
+   ```
+   docker run -d -p 8081:80 --name I_AM_FROM_DHUB your_docker_hub_image
+   ```
+ 
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker run -d -p 8081:80 --name I_AM_FROM_DHUB dhub_img:v1
+583fbd6333f5d05c5cea819fcad4780cb8e432fa1ea2ad493f6e6ef5f97b21dd
+ 
+ 
+   - Execute a container from the AWS ECR image, naming it "I_AM_FROM_ECR," and mapping host port 8082 to the container.
+ 
+   ```
+   docker run -d -p 8082:80 --name I_AM_FROM_ECR your_aws_ecr_image
+   ```
+   
+root@DESKTOP-THNIIG3:~/GIT/DHUB# docker run -d -p 8082:80 --name I_AM_FROM_ECR awsecr_img:v2
+235d13364fea78fb0e3ec2e03232b36e99bfe5687a03558ec18979c928e72884
+root@DESKTOP-THNIIG3:~/GIT/DHUB#
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------------------- 
+36. **Access Pages from Browser:**
+   - Open a web browser and access the pages:
+     - For Docker Hub: http://localhost:8081
+     - For AWS ECR: http://localhost:8082			
+--------------------------------------------------	 
