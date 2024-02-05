@@ -1,0 +1,3 @@
+CUDTHX = "cloudethix"
+
+DVOS = "devops"
