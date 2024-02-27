@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod2
+spec:
+  nodeName: worker-1
+  containers:
+  - name: my-api
+    image: shaikhamann/api:latest
+    ports:
+      - containerPort: 80
